@@ -12,6 +12,13 @@ class Settings(BaseSettings):
     
     # Google API Key for Advanced Vision
     GOOGLE_API_KEY: Optional[str] = None
+    
+    # Clave secreta para proteger los endpoints de la API
+    API_SECRET_KEY: Optional[str] = None
+
+    # API Secret Key — si está definida, todos los endpoints protegidos
+    # requieren el header: X-API-Key: <valor>
+    API_SECRET_KEY: Optional[str] = None
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod

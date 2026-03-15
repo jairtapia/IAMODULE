@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.api_v1.api import api_router
+from app.api.deps import get_api_key
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -9,16 +10,32 @@ app = FastAPI(
 )
 
 # Set all CORS enabled origins
-if settings.CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.CORS_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+]
 
-app.include_router(api_router, prefix=settings.API_V1_STR)
+# Add origins from settings if configured
+if settings.CORS_ORIGINS:
+    for origin in settings.CORS_ORIGINS:
+        origin_str = str(origin)
+        if origin_str not in origins:
+            origins.append(origin_str)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# 🔐 Protegemos todos los endpoints de api_router
+app.include_router(
+    api_router, 
+    prefix=settings.API_V1_STR, 
+    dependencies=[Depends(get_api_key)]
+)
 
 @app.get("/")
 def root():
