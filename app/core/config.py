@@ -3,7 +3,7 @@ from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str
+    PROJECT_NAME: str = "AI_Module"
     API_V1_STR: str = "/api/v1"
     CORS_ORIGINS: List[AnyHttpUrl] = []
     
@@ -14,10 +14,6 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: Optional[str] = None
     
     # Clave secreta para proteger los endpoints de la API
-    API_SECRET_KEY: Optional[str] = None
-
-    # API Secret Key — si está definida, todos los endpoints protegidos
-    # requieren el header: X-API-Key: <valor>
     API_SECRET_KEY: Optional[str] = None
 
     @field_validator("CORS_ORIGINS", mode="before")
