@@ -13,6 +13,8 @@ app = FastAPI(
 origins = [
     "http://localhost:3000",
     "http://localhost:5173",
+    "https://cuceishare-front.onrender.com",
+    "https://cuceishare-back.onrender.com",
 ]
 
 # Add origins from settings if configured
@@ -25,6 +27,7 @@ if settings.CORS_ORIGINS:
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex=r"https://.*\.onrender\.com", # Permite cualquier subdominio en onrender.com
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
